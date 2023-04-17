@@ -3,32 +3,6 @@
 ##Trabalho de conclusão de curso do MBA em Data Science e Analytics USP/Esalq
 
 
-#primeiro instala o pacote
-install.packages("tidyverse")
-
-#depois carrega o pacote
-library(tidyverse)
-
-# importar banco de dados
-pop_rua_bh_2019_2022 <- read.csv("PopRuaBH_2019_2022.csv",
-                       sep = ";")
-
-# alterar nomes das categorias
-nomes <- c("tempo_vive_na_rua", "contato_parente_fora_ruas", "data_nascimento",
-           "idade", "sexo", "auxilio_brasil", "pop_rua", "grau_instrucao", 
-           "cor_raca", "faixa_renda_familiar_per_capita", "val_remuneracao_mes_passado",
-           "cras", "regional", "faixa_desatualizacao_cadastral", "mes_ano_referencia")
-
-names(pop_rua_bh_2019_2022) <- nomes
-
-#visualizar PopRua 2019 a 2022
-View(pop_rua_bh_2019_2022)
-
-# Criar banco com as 3 variáveis a serem estudadas
-pop_rua_bh_2019_2022_3c <- pop_rua_bh_2019_2022[ , c("tempo_vive_na_rua", "grau_instrucao", "mes_ano_referencia")]
-
-View(pop_rua_bh_2019_2022_3c)
-
 # Instalação e carregamento dos pacotes utilizados
 pacotes <- c("plotly", #plataforma gráfica
              "tidyverse", #carregar outros pacotes do R
@@ -49,15 +23,32 @@ if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
   sapply(pacotes, require, character = T) 
 }
 
-# Visualização da base de dados
-pop_rua_01_2019_2v %>%
-  kable() %>%
-  kable_styling(bootstrap_options = "striped", 
-                full_width = FALSE,
-                font_size = 20)
+# importar banco de dados
+pop_rua_bh <- read.csv("PopRuaBH_2019_2022.csv",
+                       sep = ";")
+
+# alterar nomes das categorias
+nomes <- c("tempo_vive_na_rua", "contato_parente_fora_ruas", "data_nascimento",
+           "idade", "sexo", "auxilio_brasil", "pop_rua", "grau_instrucao", 
+           "cor_raca", "faixa_renda_familiar_per_capita", "val_remuneracao_mes_passado",
+           "cras", "regional", "faixa_desatualizacao_cadastral", "mes_ano_referencia")
+
+names(pop_rua_bh) <- nomes
+
+# Criar banco com as 3 variáveis a serem estudadas
+pop_rua_bh_3v <- pop_rua_bh[ , c("tempo_vive_na_rua", "grau_instrucao", "mes_ano_referencia")]
+
+# Remover linhas com campo "Não informado"
+pop_rua_bh_3v <- pop_rua_bh_3v[-grep("Não Informado", pop_rua_bh_3v$grau_instrucao), ]
+
+# Visualizar banco de dados 
+View(pop_rua_bh_3v)
+  
 
 # Tabelas de frequência das variáveis
-summary(pop_rua_01_2019_2v)
+summary(pop_rua_bh_3v)
+
+
 
 ## 1ª Parte: Análise da associação por meio de tabelas
 

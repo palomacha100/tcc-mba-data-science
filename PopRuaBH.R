@@ -9,9 +9,7 @@ pacotes <- c("plotly", #plataforma gráfica
              "ggrepel", #geoms de texto e rótulo para 'ggplot2' que ajudam a evitar sobreposição de textos
              "knitr", "kableExtra", #formatação de tabelas
              "sjPlot", #elaboração de tabelas de contingência
-             "FactoMineR", #função 'CA' para elaboração direta da Anacor
-             "amap", #funções 'matlogic' e 'burt' para matrizes binária e de Burt
-             "ade4") #função 'dudi.acm' para elaboração da ACM
+             "FactoMineR")
 
 if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
   instalador <- pacotes[!pacotes %in% installed.packages()]
@@ -31,30 +29,42 @@ pop_rua_bh <- read.csv("PopRuaBH_2019_2022.csv",
 nomes <- c("tempo_vive_na_rua", "contato_parente_fora_ruas", "data_nascimento",
            "idade", "sexo", "auxilio_brasil", "pop_rua", "grau_instrucao", 
            "cor_raca", "faixa_renda_familiar_per_capita", "val_remuneracao_mes_passado",
-           "cras", "regional", "faixa_desatualizacao_cadastral", "mes_ano_referencia")
+           "cras", "regional", "faixa_desatualizacao_cadastral", "referencia")
 
 names(pop_rua_bh) <- nomes
 
 # Criar banco com as 3 variáveis a serem estudadas
-pop_rua_bh_3v <- pop_rua_bh[ , c("tempo_vive_na_rua", "grau_instrucao", "mes_ano_referencia")]
+pop_rua_bh_3v <- pop_rua_bh[ , c("tempo_vive_na_rua", "grau_instrucao", "referencia")]
 
 # Remover linhas com campo "Não informado"
-pop_rua_bh_3v <- pop_rua_bh_3v[-grep("Não Informado", pop_rua_bh_3v$grau_instrucao), ]
+pop_rua_bh_3v <- pop_rua_bh_3v[!grepl("Informado", 
+                                      pop_rua_bh_3v$grau_instrucao), ]
+
+pop_rua_bh_3v <- pop_rua_bh_3v[grepl("Fundamental completo|Fundamental incompleto|Medio completo|Medio incompleto|Sem instrucao|Superior incompleto ou mais", pop_rua_bh_3v$grau_instrucao), ]
+
+# Tranformar os dados da coluna "referencia" de caractere para data
+pop_rua_bh_3v$referencia <- as.Date(pop_rua_bh_3v$referencia, format = "%d/%m/%Y")
+
+# Remover banco inicial
+rm(pop_rua_bh)
 
 # Visualizar banco de dados 
 View(pop_rua_bh_3v)
-  
+
+head (pop_rua_bh_3v, 100) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = "striped",
+                full_width = FALSE,
+                font_size = 17)
 
 # Tabelas de frequência das variáveis
 summary(pop_rua_bh_3v)
 
-
-
 ## 1ª Parte: Análise da associação por meio de tabelas
 
 # Tabela de contingência com frequências absolutas observadas
-tabela_contingencia <- table(pop_rua_01_2019_2v$tempo_vive_na_rua,
-                             pop_rua_01_2019_2v$grau_instrucao)
+tabela_contingencia <- table(pop_rua_bh_3v$tempo_vive_na_rua,
+                             pop_rua_bh_3v$grau_instrucao)
 tabela_contingencia
 
 # Definição da quantidade de observações na tabela de contingência
@@ -72,8 +82,8 @@ qui2$observed
 qui2$expected
 
 # Tabela de contingência com frequências absolutas observadas e esperadas
-sjt.xtab(var.row = pop_rua_01_2019_2v$tempo_vive_na_rua,
-         var.col = pop_rua_01_2019_2v$grau_instrucao,
+sjt.xtab(var.row = pop_rua_bh_3v$tempo_vive_na_rua,
+         var.col = pop_rua_bh_3v$grau_instrucao,
          show.exp = TRUE)
 
 # Resíduos – diferenças entre frequências absolutas observadas e esperadas
@@ -191,7 +201,7 @@ coord_abcissas_tempo_vive_na_rua
 coord_ordenadas_tempo_vive_na_rua <- sqrt(valores_singulares[2]) * (massa_colunas^-0.5) * autovetor_u[,2]
 coord_ordenadas_tempo_vive_na_rua
 
-# Variável em coluna na tabela de contingência ('aplicacao')
+# Variável em coluna na tabela de contingência ('grau_instrucao')
 # Coordenadas das abcissas
 coord_abcissas_grau_instrucao <- sqrt(valores_singulares[1]) * (massa_linhas^-0.5) * autovetor_v[,1]
 coord_abcissas_grau_instrucao
@@ -201,7 +211,45 @@ coord_ordenadas_grau_instrucao <- sqrt(valores_singulares[2]) * (massa_linhas^-0
 coord_ordenadas_grau_instrucao
 
 # Mapa perceptual
+cbind.data.frame(coord_abcissas_tempo_vive_na_rua, coord_ordenadas_tempo_vive_na_rua,
+                 coord_abcissas_grau_instrucao, coord_ordenadas_grau_instrucao) %>%
+  rename(dim_1_tempo_vive_na_rua = 1,
+         dim_2_tempo_vive_na_rua = 2,
+         dim_1_grau_instrucao = 3,
+         dim_2_grau_instrucao = 4) %>%
+  rownames_to_column() %>%
+  setNames(make.names(names(.), unique = TRUE)) %>%
+  mutate(grau_instrucao = rownames(data.frame(coord_abcissas_grau_instrucao,
+                                         coord_ordenadas_grau_instrucao))) %>%
+  rename(tempo_vive_na_rua = 1,
+         dim_1_tempo_vive_na_rua = 2,
+         dim_2_tempo_vive_na_rua = 3,
+         dim_1_grau_instrucao = 4,
+         dim_2_grau_instrucao = 5) %>%
+  ggplot() +
+  geom_point(aes(x = dim_1_tempo_vive_na_rua, y = dim_2_tempo_vive_na_rua),
+             color = "deeppink1",
+             fill = "deeppink1",
+             shape = 24,
+             size = 4) +
+  geom_text_repel(aes(x = dim_1_tempo_vive_na_rua, y = dim_2_tempo_vive_na_rua, label = tempo_vive_na_rua)) +
+  geom_point(aes(x = dim_1_grau_instrucao, y = dim_2_grau_instrucao),
+             color = "turquoise3",
+             fill = "turquoise3",
+             shape = 21,
+             size = 4) +
+  geom_text_repel(aes(x = dim_1_grau_instrucao, y = dim_2_grau_instrucao, label = grau_instrucao)) +
+  geom_vline(aes(xintercept = 0), linetype = "longdash", color = "grey48") +
+  geom_hline(aes(yintercept = 0), linetype = "longdash", color = "grey48") +
+  labs(x = paste("Dimensão 1:", paste0(round(variancia_explicada[1] * 100, 2),"%")),
+       y = paste("Dimensão 2:", paste0(round(variancia_explicada[2] * 100, 2),"%"))) +
+  theme_bw()
+
+
+
+# Mapa perceptual
 # O resultado pode ser obtido por meio da função 'CA' do pacote 'FactoMineR'
 anacor <- CA(tabela_contingencia, graph = TRUE)
+
 
 

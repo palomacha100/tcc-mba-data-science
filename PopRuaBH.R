@@ -21,11 +21,11 @@ if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
   sapply(pacotes, require, character = T) 
 }
 
-# importar banco de dados
+# Importação do banco de dados
 pop_rua_bh <- read.csv("PopRuaBH_2019_2022.csv",
                        sep = ";")
 
-# alterar nomes das categorias
+# Alteração dos nomes das categorias
 nomes <- c("tempo_vive_na_rua", "contato_parente_fora_ruas", "data_nascimento",
            "idade", "sexo", "auxilio_brasil", "pop_rua", "grau_instrucao", 
            "cor_raca", "faixa_renda_familiar_per_capita", "val_remuneracao_mes_passado",
@@ -33,22 +33,22 @@ nomes <- c("tempo_vive_na_rua", "contato_parente_fora_ruas", "data_nascimento",
 
 names(pop_rua_bh) <- nomes
 
-# Criar banco com as 3 variáveis a serem estudadas
+# Criação do banco com as 3 variáveis a serem estudadas
 pop_rua_bh_3v <- pop_rua_bh[ , c("tempo_vive_na_rua", "grau_instrucao", "referencia")]
 
-# Remover linhas com campo "Não informado" e nulos
+# Remoção das linhas com campo "Não informado" e nulos
 pop_rua_bh_3v <- pop_rua_bh_3v[!grepl("Informado", 
                                       pop_rua_bh_3v$grau_instrucao), ]
 
 pop_rua_bh_3v <- pop_rua_bh_3v[grepl("Fundamental completo|Fundamental incompleto|Medio completo|Medio incompleto|Sem instrucao|Superior incompleto ou mais", pop_rua_bh_3v$grau_instrucao), ]
 
-# Tranformar os dados da coluna "referencia" de caractere para data
+# Tranformação dos dados da coluna "referencia" de caractere para data
 pop_rua_bh_3v$referencia <- as.Date(pop_rua_bh_3v$referencia, format = "%d/%m/%Y")
 
-# Remover banco inicial
+# Remoção do banco inicial
 rm(pop_rua_bh)
 
-# Visualizar banco de dados 
+# Visualização do banco de dados 
 View(pop_rua_bh_3v)
 
 head (pop_rua_bh_3v, 100) %>% 
@@ -60,7 +60,7 @@ head (pop_rua_bh_3v, 100) %>%
 # Tabelas de frequência das variáveis
 summary(pop_rua_bh_3v)
 
-## 1ª Parte: Análise da associação por meio de tabelas
+## Análise da associação por meio de tabelas
 
 # Tabela de contingência com frequências absolutas observadas
 tabela_contingencia <- table(pop_rua_bh_3v$tempo_vive_na_rua,
@@ -100,7 +100,7 @@ data.frame(qui2$stdres) %>%
   theme_bw()
 
 
-## 2ª Parte: Análise da associação por meio do mapa perceptual
+## Análise da associação por meio do mapa perceptual
 
 # Definição da matriz A
 # Resíduos padronizados (qui2$residuals) divididos pela raiz quadrada do tamanho da amostra (n)
@@ -159,7 +159,7 @@ autovetor_v
 autovetor_u <-VS_AV$u
 autovetor_u
 
-# Resumindo as informações até aqui
+# Quadro resumo de informações
 data.frame(Dimensão = paste("Dimensão", 1:qtde_dimensoes),
            `Valor Singular` = valores_singulares,
            `Inércia Principal Parcial eigenvalues` = eigenvalues) %>%
@@ -176,9 +176,9 @@ data.frame(Dimensão = paste("Dimensão", 1:qtde_dimensoes),
                 full_width = FALSE, 
                 font_size = 17)
 
-# Calculando as coordenadas para plotar as categorias no mapa perceptual
+# Cálculo das coordenadas para plotagem das categorias no mapa perceptual
 
-# Variável em linha na tabela de contingência ('perfil')
+# Variável em linha na tabela de contingência ('tempo_vive_na_rua')
 # Coordenadas das abcissas
 coord_abcissas_tempo_vive_na_rua <- sqrt(valores_singulares[1]) * (massa_colunas^-0.5) * autovetor_u[,1]
 coord_abcissas_tempo_vive_na_rua
@@ -230,8 +230,6 @@ cbind.data.frame(coord_abcissas_tempo_vive_na_rua, coord_ordenadas_tempo_vive_na
   labs(x = paste("Dimensão 1:", paste0(round(variancia_explicada[1] * 100, 2),"%")),
        y = paste("Dimensão 2:", paste0(round(variancia_explicada[2] * 100, 2),"%"))) +
   theme_bw()
-
-
 
 # Mapa perceptual
 # O resultado pode ser obtido por meio da função 'CA' do pacote 'FactoMineR'

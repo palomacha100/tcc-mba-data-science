@@ -85,6 +85,8 @@ qui2$stdres
 data.frame(qui2$stdres) %>%
   rename(tempo_vive_na_rua = 1,
          grau_instrucao = 2) %>% 
+  mutate(tempo_vive_na_rua = factor(tempo_vive_na_rua, levels = c("Mais de dez anos", "Entre cinco e dez anos", "Entre dois e cinco anos", "Entre um e dois anos", "Entre seis meses e um ano", "Ate seis meses")),
+         grau_instrucao = factor(grau_instrucao, levels = c("Sem instrucao", "Fundamental incompleto", "Fundamental completo", "Medio incompleto", "Medio completo", "Superior incompleto ou mais"))) %>%
   ggplot(aes(x = fct_rev(tempo_vive_na_rua), y = grau_instrucao,
              fill = Freq, label = round(Freq, 3))) +
   geom_tile() +
@@ -96,6 +98,7 @@ data.frame(qui2$stdres) %>%
   labs(x = 'Tempo que vive na rua', y = 'Grau de instrução', fill = "Res. Pad. Ajustados") +
   coord_flip() +
   theme_bw()
+
 
 ## 2ª Parte: Análise da associação por meio do mapa perceptual
 

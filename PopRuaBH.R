@@ -1,4 +1,4 @@
-#--Panorama e tendência das pessoas em situação de rua em Belo Horizonte - MG--
+#--Panorama e tendência das pessoas em situação de rua em Belo Horizonte - MG
 
 ##Trabalho de conclusão de curso do MBA em Data Science e Analytics USP/Esalq
 
@@ -36,7 +36,7 @@ names(pop_rua_bh) <- nomes
 # Criar banco com as 3 variáveis a serem estudadas
 pop_rua_bh_3v <- pop_rua_bh[ , c("tempo_vive_na_rua", "grau_instrucao", "referencia")]
 
-# Remover linhas com campo "Não informado"
+# Remover linhas com campo "Não informado" e nulos
 pop_rua_bh_3v <- pop_rua_bh_3v[!grepl("Informado", 
                                       pop_rua_bh_3v$grau_instrucao), ]
 
@@ -75,23 +75,6 @@ n
 qui2 <- chisq.test(x = tabela_contingencia)
 qui2
 
-# Tabela de contingência com frequências absolutas observadas
-qui2$observed
-
-# Tabela de contingência com frequências absolutas esperadas
-qui2$expected
-
-# Tabela de contingência com frequências absolutas observadas e esperadas
-sjt.xtab(var.row = pop_rua_bh_3v$tempo_vive_na_rua,
-         var.col = pop_rua_bh_3v$grau_instrucao,
-         show.exp = TRUE)
-
-# Resíduos – diferenças entre frequências absolutas observadas e esperadas
-qui2$observed - qui2$expected
-
-# Valores de qui-quadrado por célula
-((qui2$observed - qui2$expected)^2)/qui2$expected
-
 # Resíduos padronizados
 qui2$residuals
 
@@ -110,7 +93,7 @@ data.frame(qui2$stdres) %>%
                        mid = "white", 
                        high = "purple",
                        midpoint = 1.96) +
-  labs(x = 'Tempo vive na rua', y = 'Grau instrução', fill = "Res. Pad. Ajustados") +
+  labs(x = 'Tempo que vive na rua', y = 'Grau de instrução', fill = "Res. Pad. Ajustados") +
   coord_flip() +
   theme_bw()
 

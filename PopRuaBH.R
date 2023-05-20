@@ -28,22 +28,26 @@ pop_rua_bh <- read.csv("PopRuaBH_2019_2022.csv",
 # Alteração dos nomes das categorias
 nomes <- c("tempo_vive_na_rua", "contato_parente_fora_ruas", "data_nascimento",
            "idade", "sexo", "auxilio_brasil", "pop_rua", "grau_instrucao", 
-           "cor_raca", "faixa_renda_familiar_per_capita", "val_remuneracao_mes_passado",
+           "cor_raca", "faixa_renda_familiar_per_capita", 
+           "val_remuneracao_mes_passado",
            "cras", "regional", "faixa_desatualizacao_cadastral", "referencia")
 
 names(pop_rua_bh) <- nomes
 
 # Criação do banco com as 3 variáveis a serem estudadas
-pop_rua_bh_3v <- pop_rua_bh[ , c("tempo_vive_na_rua", "grau_instrucao", "referencia")]
+pop_rua_bh_3v <- pop_rua_bh[ , c("tempo_vive_na_rua", "grau_instrucao", 
+                                 "referencia")]
 
 # Remoção das linhas com campo "Não informado" e nulos
 pop_rua_bh_3v <- pop_rua_bh_3v[!grepl("Informado", 
                                       pop_rua_bh_3v$grau_instrucao), ]
 
-pop_rua_bh_3v <- pop_rua_bh_3v[grepl("Fundamental completo|Fundamental incompleto|Medio completo|Medio incompleto|Sem instrucao|Superior incompleto ou mais", pop_rua_bh_3v$grau_instrucao), ]
+pop_rua_bh_3v <- pop_rua_bh_3v[grepl("Fundamental completo|Fundamental incompleto|Medio completo|Medio incompleto|Sem instrucao|Superior incompleto ou mais", 
+                                     pop_rua_bh_3v$grau_instrucao), ]
 
 # Tranformação dos dados da coluna "referencia" de caractere para data
-pop_rua_bh_3v$referencia <- as.Date(pop_rua_bh_3v$referencia, format = "%d/%m/%Y")
+pop_rua_bh_3v$referencia <- as.Date(pop_rua_bh_3v$referencia, 
+                                    format = "%d/%m/%Y")
 
 # Remoção do banco inicial
 rm(pop_rua_bh)
@@ -85,8 +89,20 @@ qui2$stdres
 data.frame(qui2$stdres) %>%
   rename(tempo_vive_na_rua = 1,
          grau_instrucao = 2) %>% 
-  mutate(tempo_vive_na_rua = factor(tempo_vive_na_rua, levels = c("Mais de dez anos", "Entre cinco e dez anos", "Entre dois e cinco anos", "Entre um e dois anos", "Entre seis meses e um ano", "Ate seis meses")),
-         grau_instrucao = factor(grau_instrucao, levels = c("Sem instrucao", "Fundamental incompleto", "Fundamental completo", "Medio incompleto", "Medio completo", "Superior incompleto ou mais"))) %>%
+  mutate(tempo_vive_na_rua = factor(tempo_vive_na_rua, 
+                                    levels = c("Mais de dez anos", 
+                                               "Entre cinco e dez anos", 
+                                               "Entre dois e cinco anos", 
+                                               "Entre um e dois anos", 
+                                               "Entre seis meses e um ano", 
+                                               "Ate seis meses")),
+         grau_instrucao = factor(grau_instrucao, 
+                                 levels = c("Sem instrucao", 
+                                            "Fundamental incompleto", 
+                                            "Fundamental completo", 
+                                            "Medio incompleto", 
+                                            "Medio completo", 
+                                            "Superior incompleto ou mais"))) %>%
   ggplot(aes(x = fct_rev(tempo_vive_na_rua), y = grau_instrucao,
              fill = Freq, label = round(Freq, 3))) +
   geom_tile() +
@@ -95,7 +111,8 @@ data.frame(qui2$stdres) %>%
                        mid = "white", 
                        high = "purple",
                        midpoint = 1.96) +
-  labs(x = 'Tempo que vive na rua', y = 'Grau de instrução', fill = "Res. Pad. Ajustados") +
+  labs(x = 'Tempo que vive na rua', y = 'Grau de instrução', 
+       fill = "Res. Pad. Ajustados") +
   coord_flip() +
   theme_bw()
 
@@ -196,8 +213,10 @@ coord_ordenadas_grau_instrucao <- sqrt(valores_singulares[2]) * (massa_linhas^-0
 coord_ordenadas_grau_instrucao
 
 # Mapa perceptual
-cbind.data.frame(coord_abcissas_tempo_vive_na_rua, coord_ordenadas_tempo_vive_na_rua,
-                 coord_abcissas_grau_instrucao, coord_ordenadas_grau_instrucao) %>%
+cbind.data.frame(coord_abcissas_tempo_vive_na_rua, 
+                 coord_ordenadas_tempo_vive_na_rua,
+                 coord_abcissas_grau_instrucao, 
+                 coord_ordenadas_grau_instrucao) %>%
   rename(dim_1_tempo_vive_na_rua = 1,
          dim_2_tempo_vive_na_rua = 2,
          dim_1_grau_instrucao = 3,
@@ -217,25 +236,20 @@ cbind.data.frame(coord_abcissas_tempo_vive_na_rua, coord_ordenadas_tempo_vive_na
              fill = "deeppink1",
              shape = 24,
              size = 4) +
-  geom_text_repel(aes(x = dim_1_tempo_vive_na_rua, y = dim_2_tempo_vive_na_rua, label = tempo_vive_na_rua)) +
+  geom_text_repel(aes(x = dim_1_tempo_vive_na_rua, y = dim_2_tempo_vive_na_rua, 
+                      label = tempo_vive_na_rua)) +
   geom_point(aes(x = dim_1_grau_instrucao, y = dim_2_grau_instrucao),
              color = "turquoise3",
              fill = "turquoise3",
              shape = 21,
              size = 4) +
-  geom_text_repel(aes(x = dim_1_grau_instrucao, y = dim_2_grau_instrucao, label = grau_instrucao)) +
+  geom_text_repel(aes(x = dim_1_grau_instrucao, y = dim_2_grau_instrucao, 
+                      label = grau_instrucao)) +
   geom_vline(aes(xintercept = 0), linetype = "longdash", color = "grey48") +
   geom_hline(aes(yintercept = 0), linetype = "longdash", color = "grey48") +
   labs(x = paste("Dimensão 1:", paste0(round(variancia_explicada[1] * 100, 2),"%")),
        y = paste("Dimensão 2:", paste0(round(variancia_explicada[2] * 100, 2),"%"))) +
   theme_bw()
 
-# Mapa perceptual
-# Função 'CA' do pacote 'FactoMineR'
+# Mapa perceptual com função 'CA' do pacote 'FactoMineR'
 anacor <- CA(tabela_contingencia, graph = TRUE)
-
-
-library(ggrepel)
-
-
-

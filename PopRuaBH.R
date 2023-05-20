@@ -5,11 +5,11 @@
 
 # Instalação e carregamento dos pacotes utilizados
 pacotes <- c("plotly", #plataforma gráfica
-             "tidyverse", #carregar outros pacotes do R
-             "ggrepel", #geoms de texto e rótulo para 'ggplot2' que ajudam a evitar sobreposição de textos
+             "tidyverse", #carregamento de outros pacotes do R
+             "ggrepel", #evitar a sobreposição de textos no mapa perceptual
              "knitr", "kableExtra", #formatação de tabelas
              "sjPlot", #elaboração de tabelas de contingência
-             "FactoMineR")
+             "FactoMineR") #criação de mapa perceptual
 
 if(sum(as.numeric(!pacotes %in% installed.packages())) != 0){
   instalador <- pacotes[!pacotes %in% installed.packages()]
@@ -99,7 +99,6 @@ data.frame(qui2$stdres) %>%
   coord_flip() +
   theme_bw()
 
-
 ## Análise da associação por meio do mapa perceptual
 
 # Definição da matriz A
@@ -159,7 +158,7 @@ autovetor_v
 autovetor_u <-VS_AV$u
 autovetor_u
 
-# Quadro resumo de informações
+# Tabela resumo de informações
 data.frame(Dimensão = paste("Dimensão", 1:qtde_dimensoes),
            `Valor Singular` = valores_singulares,
            `Inércia Principal Parcial eigenvalues` = eigenvalues) %>%
@@ -206,7 +205,7 @@ cbind.data.frame(coord_abcissas_tempo_vive_na_rua, coord_ordenadas_tempo_vive_na
   rownames_to_column() %>%
   setNames(make.names(names(.), unique = TRUE)) %>%
   mutate(grau_instrucao = rownames(data.frame(coord_abcissas_grau_instrucao,
-                                         coord_ordenadas_grau_instrucao))) %>%
+                                              coord_ordenadas_grau_instrucao))) %>%
   rename(tempo_vive_na_rua = 1,
          dim_1_tempo_vive_na_rua = 2,
          dim_2_tempo_vive_na_rua = 3,
@@ -232,8 +231,11 @@ cbind.data.frame(coord_abcissas_tempo_vive_na_rua, coord_ordenadas_tempo_vive_na
   theme_bw()
 
 # Mapa perceptual
-# O resultado pode ser obtido por meio da função 'CA' do pacote 'FactoMineR'
+# Função 'CA' do pacote 'FactoMineR'
 anacor <- CA(tabela_contingencia, graph = TRUE)
+
+
+library(ggrepel)
 
 
 

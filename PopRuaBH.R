@@ -1,7 +1,8 @@
-#--Panorama e tendência das pessoas em situação de rua em Belo Horizonte - MG
+# Panorama e perspectivas da população em situação de rua em Belo Horizonte, Minas Gerais
 
 ##Trabalho de conclusão de curso do MBA em Data Science e Analytics USP/Esalq
 
+# Paloma Chaves Silva
 
 # Instalação e carregamento dos pacotes utilizados
 pacotes <- c("plotly", #plataforma gráfica
@@ -64,7 +65,7 @@ head (pop_rua_bh_3v, 100) %>%
 # Tabelas de frequência das variáveis
 summary(pop_rua_bh_3v)
 
-## Análise da associação por meio de tabelas
+## Análise da associação utilizando tabelas
 
 # Tabela de contingência com frequências absolutas observadas
 tabela_contingencia <- table(pop_rua_bh_3v$tempo_vive_na_rua,
@@ -109,14 +110,14 @@ data.frame(qui2$stdres) %>%
   geom_text(size = 5) +
   scale_fill_gradient2(low = "white", 
                        mid = "white", 
-                       high = "purple",
+                       high = "#333333",
                        midpoint = 1.96) +
   labs(x = 'Tempo que vive na rua', y = 'Grau de instrução', 
        fill = "Res. Pad. Ajustados") +
   coord_flip() +
   theme_bw()
 
-## Análise da associação por meio do mapa perceptual
+## Análise da associação utilizando o mapa perceptual
 
 # Definição da matriz A
 # Resíduos padronizados (qui2$residuals) divididos pela raiz quadrada do tamanho da amostra (n)
@@ -192,23 +193,21 @@ data.frame(Dimensão = paste("Dimensão", 1:qtde_dimensoes),
                 full_width = FALSE, 
                 font_size = 17)
 
-# Cálculo das coordenadas para plotagem das categorias no mapa perceptual
+# Coordenadas para plotagem das categorias no mapa perceptual
 
-# Variável em linha na tabela de contingência ('tempo_vive_na_rua')
-# Coordenadas das abcissas
+# Coordenadas das abcissas ('tempo_vive_na_rua')
 coord_abcissas_tempo_vive_na_rua <- sqrt(valores_singulares[1]) * (massa_colunas^-0.5) * autovetor_u[,1]
 coord_abcissas_tempo_vive_na_rua
 
-# Coordenadas das ordenadas
+# Coordenadas das ordenadas ('tempo_vive_na_rua')
 coord_ordenadas_tempo_vive_na_rua <- sqrt(valores_singulares[2]) * (massa_colunas^-0.5) * autovetor_u[,2]
 coord_ordenadas_tempo_vive_na_rua
 
-# Variável em coluna na tabela de contingência ('grau_instrucao')
-# Coordenadas das abcissas
+# Coordenadas das abcissas ('grau_instrucao')
 coord_abcissas_grau_instrucao <- sqrt(valores_singulares[1]) * (massa_linhas^-0.5) * autovetor_v[,1]
 coord_abcissas_grau_instrucao
 
-# Coordenadas das ordenadas
+# Coordenadas das ordenadas ('grau_instrucao')
 coord_ordenadas_grau_instrucao <- sqrt(valores_singulares[2]) * (massa_linhas^-0.5) * autovetor_v[,2]
 coord_ordenadas_grau_instrucao
 
@@ -251,5 +250,5 @@ cbind.data.frame(coord_abcissas_tempo_vive_na_rua,
        y = paste("Dimensão 2:", paste0(round(variancia_explicada[2] * 100, 2),"%"))) +
   theme_bw()
 
-# Mapa perceptual com função 'CA' do pacote 'FactoMineR'
+# Mapa perceptual usando a função 'CA' do pacote 'FactoMineR'
 anacor <- CA(tabela_contingencia, graph = TRUE)

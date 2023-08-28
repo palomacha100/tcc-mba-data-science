@@ -4,11 +4,11 @@ Trabalho de conclusão de curso para o MBA em Data Science e Analytics USP/Esalq
 ## Documentação
 
 <ol>
-<li><a href="docs/01-Introducao.md">Introdução</a></li>
-<li><a href="docs/02-Objetivo.md">Objetivo</a></li>
-<li><a href="docs/03-Materiais e Metodos.md">Material e Métodos</a></li>
-<li><a href="docs/04-resultados esperados.md"> Resultados Esperados</a></li>
-<li><a href="docs/05-Referências.md"> Referências Bibliográficas</a></li>
+  <li><a href="docs/resumo.md">Resumo</a></li>
+  <li><a href="docs/introducao.md">Introdução</a></li>
+  <li><a href="docs/materiais-e-metodos.md">Materiais e Métodos</a></li>
+  <li><a href="docs/resultados-preliminares.md">Resultados Preliminares</a></li>
+  <li><a href="docs/referencias.md"> Referências</a></li>
 </ol>
 
 ## Código

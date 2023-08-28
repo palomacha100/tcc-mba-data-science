@@ -1,5 +1,5 @@
-# Panorama e tendência das pessoas em situação de rua em Belo Horizonte - MG
-Trabalho de conclusão de curso de MBA em Data Science e Analytics USP/Esalq
+# Retratando vulnerabilidade: análise de correspondência e a população em condição de rua em Belo Horizonte
+Trabalho de conclusão de curso para o MBA em Data Science e Analytics USP/Esalq
 
 ## Documentação
 

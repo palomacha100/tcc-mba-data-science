@@ -1,4 +1,4 @@
-# Material e Métodos
+# Materiais e Métodos
 	
 Encontra-se, nessa pesquisa, um estudo de caso que possui cunho exploratório por analisar dados que visam maior proximidade com o problema, abrangendo a compreensão sobre o tema. Segundo a natureza dos dados, ele se classifica como uma pesquisa qualitativa por usar variáveis categóricas e se refere à uma pesquisa aplicada, pela possibilidade de contribuir para a reflexão e solução do problema.
 
